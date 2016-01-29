@@ -24,7 +24,7 @@
   colnames(whole) <- c("subject", "activity", labels)
 
 ## clear out the temp variables to save resources
-  rm(xtrain, ytrain, subjtrain, train, xtest, ytest, subjtest, test)
+  rm(xtrain, ytrain, subjtrain, train, xtest, ytest, subjtest, test, header)
 
 ## Extracts only the measurements on the mean and standard deviation
 ##  for each measurement.
@@ -47,6 +47,7 @@
   dfnamed <- merge (activities, gooddf)
   dfnamed <- select(dfnamed, -activity)
   names(dfnamed)[1]<- "activity"
+  rm(gooddf, whole)
 
 ## Appropriately labels the data set with descriptive variable names.
 ## Plan of attack : put the names in a vector, grep the vector, reassign to colnames
@@ -64,4 +65,8 @@
           select(subject, activity, 3:81) %>% 
           group_by(subject, activity)  %>%
           summarise_each(funs(mean))
- 
+  
+## append -mean to the variable names to reflect the summary  
+  labels <- names(tidy)
+  labels[3:81]<- gsub("$", "-mean", labels[3:81])
+  names(tidy)<- labels
